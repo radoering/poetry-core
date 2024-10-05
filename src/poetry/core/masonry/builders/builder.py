@@ -54,19 +54,14 @@ class Builder:
 
         packages = []
         for p in self._package.packages:
-            formats = p.get("format") or None
-
             # Default to including the package in both sdist & wheel
             # if the `format` key is not provided in the inline include table.
-            if formats is None:
-                formats = ["sdist", "wheel"]
-
+            formats = p.get("format", ["sdist", "wheel"])
             if not isinstance(formats, list):
                 formats = [formats]
 
             if (
-                formats
-                and self.format
+                self.format
                 and self.format not in formats
                 and not self._ignore_packages_formats
             ):
@@ -76,11 +71,14 @@ class Builder:
 
         includes = []
         for include in self._package.include:
-            formats = include.get("format", [])
+            # Default to including files only in sdist because files included in wheel,
+            # will be unpacked straight into site-packages.
+            formats = include.get("format", ["sdist", "wheel"])
+            if not isinstance(formats, list):
+                formats = [formats]
 
             if (
-                formats
-                and self.format
+                self.format
                 and self.format not in formats
                 and not self._ignore_packages_formats
             ):
@@ -123,7 +121,7 @@ class Builder:
 
             explicitly_included = set()
             for inc in self._package.include:
-                if fmt and inc["format"] and fmt not in inc["format"]:
+                if fmt and (inc_fmt := inc.get("format")) and fmt not in inc_fmt:
                     continue
 
                 included_glob = inc["path"]
