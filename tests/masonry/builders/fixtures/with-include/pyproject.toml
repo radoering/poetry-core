@@ -21,9 +21,8 @@ classifiers = [
 ]
 
 packages = [
-    { include = "extra_dir" },
-#    { include = "extra_dir/**/*.py" },
-    { include = "extra_dir/vcs_excluded.txt" },
+    { include = "extra_dir/**/*.py" },
+    { include = "extra_dir/**/*.py" },
     { include = "my_module.py" },
     { include = "package_with_include" },
     { include = "tests", format = "sdist" },

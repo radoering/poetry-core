@@ -242,7 +242,7 @@ def test_find_packages(project_name: str) -> None:
     builder = SdistBuilder(poetry)
 
     base = project(project_name)
-    include = PackageInclude(base, "my_package")
+    include = PackageInclude(base, "my_package", formats=["sdist"])
 
     pkg_dir, packages, pkg_data = builder.find_packages(include)
 
@@ -264,7 +264,7 @@ def test_find_packages(project_name: str) -> None:
     builder = SdistBuilder(poetry)
 
     base = project("source_package")
-    include = PackageInclude(base, "package_src", source="src")
+    include = PackageInclude(base, "package_src", source="src", formats=["sdist"])
 
     pkg_dir, packages, pkg_data = builder.find_packages(include)
 

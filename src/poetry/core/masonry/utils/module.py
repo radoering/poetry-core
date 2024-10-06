@@ -31,7 +31,8 @@ class Module:
         self._in_src = False
         self._is_package = False
         self._path = Path(directory)
-        self._includes: list[Include] = []
+        self._package_includes: list[PackageInclude] = []
+        self._explicit_includes: list[Include] = []
 
         if not packages:
             # It must exist either as a .py file or a directory, but not both
@@ -75,7 +76,7 @@ class Module:
             if formats and not isinstance(formats, list):
                 formats = [formats]
 
-            self._includes.append(
+            self._package_includes.append(
                 PackageInclude(
                     self._path,
                     package["include"],
@@ -86,8 +87,8 @@ class Module:
             )
 
         for include in includes:
-            self._includes.append(
-                Include(self._path, include["path"], formats=include.get("format"))
+            self._explicit_includes.append(
+                Include(self._path, include["path"], formats=include["format"])
             )
 
     @property
@@ -107,7 +108,11 @@ class Module:
 
     @property
     def includes(self) -> list[Include]:
-        return self._includes
+        return [*self._package_includes, *self._explicit_includes]
+
+    @property
+    def explicit_includes(self) -> list[Include]:
+        return self._explicit_includes
 
     def is_package(self) -> bool:
         return self._is_package

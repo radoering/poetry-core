@@ -255,7 +255,7 @@ def test_dist_info_file_permissions(project: str) -> None:
         )
 
 
-def test_wheel_includes_inline_table() -> None:
+def test_wheel_include_formats() -> None:
     module_path = fixtures_dir / "with-include-formats"
     WheelBuilder.make(Factory().create_poetry(module_path))
 
@@ -278,12 +278,12 @@ def test_wheel_includes_inline_table() -> None:
         assert "pkg_both/__init__.py" in z.namelist()
         assert "pkg_both/sub/__init__.py" in z.namelist()
         # other includes
-        assert "default.txt" not in z.namelist()
+        assert "default.txt" in z.namelist()
         assert "sdist_only.txt" not in z.namelist()
         assert "wheel_only.txt" in z.namelist()
         assert "both.txt" in z.namelist()
-        assert "default/file.txt" not in z.namelist()
-        assert "default/sub/file.txt" not in z.namelist()
+        assert "default/file.txt" in z.namelist()
+        assert "default/sub/file.txt" in z.namelist()
         assert "sdist_only/file.txt" not in z.namelist()
         assert "sdist_only/sub/file.txt" not in z.namelist()
         assert "wheel_only/file.txt" in z.namelist()
