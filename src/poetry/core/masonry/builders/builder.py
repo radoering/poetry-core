@@ -148,7 +148,7 @@ class Builder:
 
         for include in self._module.includes:
             include.refresh()
-            formats = include.formats or ["sdist"]
+            formats = include.formats or ["sdist", "wheel"]
 
             for file in include.elements:
                 if "__pycache__" in str(file):
@@ -185,7 +185,7 @@ class Builder:
                             if not (
                                 current_file.is_dir()
                                 or self.is_excluded(
-                                    include_file.relative_to_source_root()
+                                    include_file.relative_to_project_root()
                                 )
                             ):
                                 to_add.add(include_file)
