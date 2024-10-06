@@ -148,7 +148,7 @@ class Builder:
 
         for include in self._module.includes:
             include.refresh()
-            formats = include.formats or ["sdist", "wheel"]
+            formats = include.formats
 
             for file in include.elements:
                 if "__pycache__" in str(file):
