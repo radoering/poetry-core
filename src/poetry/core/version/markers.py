@@ -615,10 +615,7 @@ def _flatten_markers(
 
     for marker in markers:
         if isinstance(marker, flatten_class):
-            for _marker in _flatten_markers(
-                marker.markers,  # type: ignore[attr-defined]
-                flatten_class,
-            ):
+            for _marker in _flatten_markers(marker.markers, flatten_class):
                 if _marker not in flattened:
                     flattened.append(_marker)
 
