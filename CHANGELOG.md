@@ -1,6 +1,18 @@
 # Change Log
 
 
+## [2.4.0] - 2026-05-03
+
+### Changed
+
+- Update list of supported licenses ([#935](https://github.com/python-poetry/poetry-core/pull/935)).
+
+### Vendoring
+
+- [`packaging==26.2`](https://github.com/pypa/packaging/blob/main/CHANGELOG.rst)
+- [`tomli==2.4.1`](https://github.com/hukkin/tomli/blob/master/CHANGELOG.md)
+
+
 ## [2.3.2] - 2026-03-29
 
 ### Changed
@@ -54,6 +66,11 @@
 - Fix an issue where the implicit main group did not exist if it was explicitly declared as not having any dependencies ([#892](https://github.com/python-poetry/poetry-core/pull/892)).
 - Fix an issue where `python_full_version` markers with pre-release versions were parsed incorrectly ([#893](https://github.com/python-poetry/poetry-core/pull/893)).
 
+### Vendoring
+
+- [`lark==1.3.1`](https://github.com/lark-parser/lark/releases/tag/1.3.1)
+- [`tomli==2.4.0`](https://github.com/hukkin/tomli/blob/master/CHANGELOG.md)
+
 
 ## [2.2.1] - 2025-09-21
 
@@ -82,6 +99,11 @@
 
 - Fix an issue where explicitly included files that are in `.gitignore` were not included in the distribution ([#874](https://github.com/python-poetry/poetry-core/pull/874)).
 - Fix an issue where marker operations could result in invalid markers ([#875](https://github.com/python-poetry/poetry-core/pull/875)).
+
+### Vendoring
+
+- [`fastjsonschema==2.21.2`](https://github.com/horejsek/python-fastjsonschema/blob/master/CHANGELOG.txt)
+- [`packaging==25.0`](https://github.com/pypa/packaging/blob/main/CHANGELOG.rst)
 
 
 ## [2.1.3] - 2025-05-04
@@ -864,7 +886,8 @@ No changes.
 - Fixed support for stub-only packages ([#28](https://github.com/python-poetry/core/pull/28)).
 
 
-[Unreleased]: https://github.com/python-poetry/poetry-core/compare/2.3.2...main
+[Unreleased]: https://github.com/python-poetry/poetry-core/compare/2.4.0...main
+[2.4.0]: https://github.com/python-poetry/poetry-core/releases/tag/2.4.0
 [2.3.2]: https://github.com/python-poetry/poetry-core/releases/tag/2.3.2
 [2.3.1]: https://github.com/python-poetry/poetry-core/releases/tag/2.3.1
 [2.3.0]: https://github.com/python-poetry/poetry-core/releases/tag/2.3.0
