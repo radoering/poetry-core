@@ -11,6 +11,7 @@ from poetry.core.packages.utils.utils import convert_markers
 from poetry.core.packages.utils.utils import create_nested_marker
 from poetry.core.packages.utils.utils import get_python_constraint_from_marker
 from poetry.core.packages.utils.utils import is_python_project
+from poetry.core.packages.utils.utils import splitext
 from poetry.core.version.markers import parse_marker
 
 
@@ -245,6 +246,24 @@ def test_get_python_constraint_from_marker(marker: str, constraint: str) -> None
     marker_parsed = parse_marker(marker)
     constraint_parsed = parse_marker_version_constraint(constraint)
     assert get_python_constraint_from_marker(marker_parsed) == constraint_parsed
+
+
+@pytest.mark.parametrize(
+    ("path", "expected"),
+    [
+        ("demo", ("demo", "")),
+        ("demo.whl", ("demo", ".whl")),
+        (".env", (".env", "")),
+        ("demo-1.0.0.tar", ("demo-1.0.0", ".tar")),
+        ("demo-1.0.0.tar.gz", ("demo-1.0.0", ".tar.gz")),
+        ("demo-1.0.0.tar.bz2", ("demo-1.0.0", ".tar.bz2")),
+        ("demo-1.0.0.TAR.GZ", ("demo-1.0.0", ".TAR.GZ")),
+        ("dist/demo-1.0.0.tar.gz", ("dist/demo-1.0.0", ".tar.gz")),
+        (Path("demo-1.0.0.tar.gz"), ("demo-1.0.0", ".tar.gz")),
+    ],
+)
+def test_splitext(path: str | Path, expected: tuple[str, str]) -> None:
+    assert splitext(path) == expected
 
 
 @pytest.mark.parametrize(
