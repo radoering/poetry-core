@@ -28,6 +28,7 @@ def metadata_checksum() -> str:
 def make_url(
     ext: str,
     *,
+    filename: str | None = None,
     file_checksum: str | None = None,
     metadata_checksum: str | None = None,
     hashes: dict[str, str] | None = None,
@@ -39,7 +40,31 @@ def make_url(
         url += f"#sha256={file_checksum}"
     if not metadata:
         metadata = f"sha256={metadata_checksum}" if metadata_checksum else None
-    return Link(url, hashes=hashes, metadata=metadata)
+    return Link(url, filename=filename, hashes=hashes, metadata=metadata)
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        (None, "demo-1.0.0.whl"),
+        ("other.whl", "other.whl"),
+    ],
+)
+def test_package_link_filename(filename: str | None, expected: str) -> None:
+    link = make_url(ext="whl", filename=filename)
+    assert link.filename == expected
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        (None, ".whl"),
+        ("other.tar.gz", ".tar.gz"),
+    ],
+)
+def test_package_link_ext(filename: str | None, expected: str) -> None:
+    link = make_url(ext="whl", filename=filename)
+    assert link.ext == expected
 
 
 def test_package_link_hash(file_checksum: str) -> None:
