@@ -260,6 +260,7 @@ def test_get_python_constraint_from_marker(marker: str, constraint: str) -> None
         ("demo-1.0.0.TAR.GZ", ("demo-1.0.0", ".TAR.GZ")),
         ("dist/demo-1.0.0.tar.gz", ("dist/demo-1.0.0", ".tar.gz")),
         (Path("demo-1.0.0.tar.gz"), ("demo-1.0.0", ".tar.gz")),
+        (Path("dist/demo-1.0.0.tar.gz"), (str(Path("dist/demo-1.0.0")), ".tar.gz")),
     ],
 )
 def test_splitext(path: str | Path, expected: tuple[str, str]) -> None:
