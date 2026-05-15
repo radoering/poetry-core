@@ -177,13 +177,13 @@ def splitext(path: str | Path, *, is_filename: bool = False) -> tuple[str, str]:
         # - is twice as fast as os.path.splitext()
         # - is by factor 10 faster than path.stem and path.suffix
         base, sep, ext = str(path).rpartition(".")
-        ext = f"{sep}{ext}"
+        ext = sep + ext
         if not base:
             return ext, ""
     else:
         base, ext = os.path.splitext(path)  # noqa: PTH122
     if base.lower().endswith(".tar"):
-        ext = f"{base[-4:]}{ext}"
+        ext = base[-4:] + ext
         base = base[:-4]
     return base, ext
 
