@@ -263,7 +263,12 @@ def test_get_python_constraint_from_marker(marker: str, constraint: str) -> None
         (Path("dist/demo-1.0.0.tar.gz"), (str(Path("dist/demo-1.0.0")), ".tar.gz")),
     ],
 )
-def test_splitext(path: str | Path, expected: tuple[str, str]) -> None:
+@pytest.mark.parametrize("is_filename", [False, True])
+def test_splitext(
+    path: str | Path, expected: tuple[str, str], is_filename: bool
+) -> None:
+    if is_filename is True and "/" in Path(path).as_posix():
+        pytest.skip(reason="Not a filename")
     assert splitext(path) == expected
 
 
