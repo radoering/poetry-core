@@ -1,6 +1,13 @@
 # Change Log
 
 
+## [2.4.1] - 2026-05-23
+
+### Fixed
+
+- Fix an issue where certain marker operations (mostly used with extra markers) resulted in wrong markers ([#943](https://github.com/python-poetry/poetry-core/pull/943)).
+
+
 ## [2.4.0] - 2026-05-03
 
 ### Changed
@@ -886,7 +893,8 @@ No changes.
 - Fixed support for stub-only packages ([#28](https://github.com/python-poetry/core/pull/28)).
 
 
-[Unreleased]: https://github.com/python-poetry/poetry-core/compare/2.4.0...main
+[Unreleased]: https://github.com/python-poetry/poetry-core/compare/2.4.1...main
+[2.4.1]: https://github.com/python-poetry/poetry-core/releases/tag/2.4.1
 [2.4.0]: https://github.com/python-poetry/poetry-core/releases/tag/2.4.0
 [2.3.2]: https://github.com/python-poetry/poetry-core/releases/tag/2.3.2
 [2.3.1]: https://github.com/python-poetry/poetry-core/releases/tag/2.3.1
