@@ -22,6 +22,7 @@ class Link:
         self,
         url: str,
         *,
+        filename: str | None = None,
         requires_python: str | None = None,
         hashes: Mapping[str, str] | None = None,
         metadata: str | bool | dict[str, str] | None = None,
@@ -34,6 +35,12 @@ class Link:
 
         url:
             url of the resource pointed to (href of the link)
+        filename:
+            The filename of the resource.
+            If not provided, it will be derived from the URL.
+            PEP 691 mandates a `filename` field,
+            which does not even have to be part of the URL.
+            Further, using it lets us skip expensive work.
         requires_python:
             String containing the `Requires-Python` metadata field, specified
             in PEP 345. This may be specified by a data-requires-python
@@ -64,6 +71,9 @@ class Link:
             url = path_to_url(url)
 
         self.url = url
+        if filename:
+            # override cached_property
+            self.filename = filename
         self.requires_python = requires_python if requires_python else None
         self._hashes = hashes
 
@@ -142,7 +152,7 @@ class Link:
         return urlparse.unquote(urlparse.urlsplit(self.url)[2])
 
     def splitext(self) -> tuple[str, str]:
-        return splitext(posixpath.basename(self.path.rstrip("/")), is_filename=True)
+        return splitext(self.filename, is_filename=True)
 
     @cached_property
     def ext(self) -> str:
