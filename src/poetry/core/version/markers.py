@@ -102,6 +102,27 @@ class BaseMarker(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def apply(self, environment: Mapping[str, Any]) -> BaseMarker:
+        """
+        Partially evaluate this marker against the (possibly partial) environment.
+
+        Similar to `validate`, but instead of collapsing the whole marker tree to
+        a single `bool`, this returns a simplified `BaseMarker`:
+
+        - Single markers whose variable name is present in `environment` are
+          validated and replaced with `AnyMarker` (if they hold) or `EmptyMarker`
+          (if they do not).
+        - Single markers whose variable name is not present in `environment` are
+          left untouched, so the result can still depend on those undefined
+          variables.
+        - Composite markers are simplified as usual.
+
+        Whereas `validate` treats missing variables as satisfied (returning
+        `True`), `apply` preserves them so the caller can decide later.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def without_extras(self) -> BaseMarker:
         raise NotImplementedError
 
@@ -148,6 +169,9 @@ class AnyMarker(BaseMarker):
     def validate(self, environment: Mapping[str, Any] | None) -> bool:
         return True
 
+    def apply(self, environment: Mapping[str, Any]) -> BaseMarker:
+        return self
+
     def without_extras(self) -> BaseMarker:
         return self
 
@@ -193,6 +217,9 @@ class EmptyMarker(BaseMarker):
 
     def validate(self, environment: Mapping[str, Any] | None) -> bool:
         return False
+
+    def apply(self, environment: Mapping[str, Any]) -> BaseMarker:
+        return self
 
     def without_extras(self) -> BaseMarker:
         return self
@@ -292,6 +319,11 @@ class SingleMarkerLike(BaseMarker, ABC, Generic[SingleMarkerConstraint]):
         # to know that.
         constraint = self._parser(environment[self._name])
         return self._constraint.allows(constraint)  # type: ignore[arg-type]
+
+    def apply(self, environment: Mapping[str, Any]) -> BaseMarker:
+        if self._name not in environment:
+            return self
+        return AnyMarker() if self.validate(environment) else EmptyMarker()
 
     def without_extras(self) -> BaseMarker:
         return self.exclude("extra")
@@ -770,6 +802,11 @@ class MultiMarker(BaseMarker):
     def validate(self, environment: Mapping[str, Any] | None) -> bool:
         return all(m.validate(environment) for m in self._markers)
 
+    def apply(self, environment: Mapping[str, Any]) -> BaseMarker:
+        if not environment:
+            return self
+        return self.of(*(m.apply(environment) for m in self._markers))
+
     def without_extras(self) -> BaseMarker:
         return self.exclude("extra")
 
@@ -975,6 +1012,11 @@ class MarkerUnion(BaseMarker):
 
     def validate(self, environment: Mapping[str, Any] | None) -> bool:
         return any(m.validate(environment) for m in self._markers)
+
+    def apply(self, environment: Mapping[str, Any]) -> BaseMarker:
+        if not environment:
+            return self
+        return self.of(*(m.apply(environment) for m in self._markers))
 
     def without_extras(self) -> BaseMarker:
         return self.exclude("extra")
