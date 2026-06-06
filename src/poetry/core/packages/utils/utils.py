@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import functools
+import os
 import re
 import sys
 import warnings
@@ -159,13 +160,30 @@ def is_archive_file(name: str | Path) -> bool:
     return ext in ARCHIVE_EXTENSIONS
 
 
-def splitext(path: str | Path) -> tuple[str, str]:
-    """Like pathlib.Path.stem and suffix, but take off .tar too"""
-    if isinstance(path, str):
-        path = Path(path)
-    base, ext = path.stem, path.suffix
+def splitext(path: str | Path, *, is_filename: bool = False) -> tuple[str, str]:
+    """Like os.path.splitext, but take off .tar too
+
+    path:
+        The path or filename.
+    is_filename:
+        Whether the path is just a filename (i.e., contains no path separators).
+        In this case, we can use a performance shortcut
+        that only takes half of the time.
+    """
+    # Do not use pathlib because this method is a performance hotspot!
+    if is_filename:
+        # Using rpartition()
+        # - seems to be slightly faster than rsplit()
+        # - is twice as fast as os.path.splitext()
+        # - is by factor 10 faster than path.stem and path.suffix
+        base, sep, ext = str(path).rpartition(".")
+        ext = sep + ext
+        if not base:
+            return ext, ""
+    else:
+        base, ext = os.path.splitext(path)  # noqa: PTH122
     if base.lower().endswith(".tar"):
-        ext = f"{base[-4:]}{ext}"
+        ext = base[-4:] + ext
         base = base[:-4]
     return base, ext
 

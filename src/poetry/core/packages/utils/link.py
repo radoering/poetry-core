@@ -142,7 +142,7 @@ class Link:
         return urlparse.unquote(urlparse.urlsplit(self.url)[2])
 
     def splitext(self) -> tuple[str, str]:
-        return splitext(posixpath.basename(self.path.rstrip("/")))
+        return splitext(posixpath.basename(self.path.rstrip("/")), is_filename=True)
 
     @cached_property
     def ext(self) -> str:
