@@ -134,6 +134,13 @@ class Version(PEP440Version, VersionRangeConstraint):
         return self.text
 
     def __eq__(self, other: object) -> bool:
+        # Common case: comparing against another Version. Handle it first
+        # (inlining the semantics of the dataclass-generated __eq__) to avoid
+        # extra call layers and the (otherwise per-call) import of VersionRange
+        # below.
+        if self.__class__ is other.__class__:
+            return self._compare_key == other._compare_key
+
         from poetry.core.constraints.version.version_range import VersionRange
 
         if isinstance(other, VersionRange):
